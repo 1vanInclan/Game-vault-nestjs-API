@@ -1,5 +1,5 @@
 /* eslint-disable */
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseUUIDPipe } from '@nestjs/common';
 import { GamesService } from './games.service';
 import { CreateGameDto } from './dto/create-game.dto';
 import { UpdateGameDto } from './dto/update-game.dto';
@@ -24,19 +24,19 @@ export class GamesController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Obtener juego con ID' })
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.gamesService.findOne(id);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Actualizar informacion de juego' })
-  update(@Param('id') id: string, @Body() updateGameDto: UpdateGameDto) {
+  update(@Param('id', ParseUUIDPipe) id: string, @Body() updateGameDto: UpdateGameDto) {
     return this.gamesService.update(id, updateGameDto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Eliminar videojuego' })
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.gamesService.remove(id);
   }
 }

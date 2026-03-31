@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
 import { GamesModule } from './games/games.module';
+import { PrismaModule } from 'prisma/prisma.module';
 
 @Module({
-  imports: [GamesModule],
+  imports: [GamesModule, PrismaModule],
   controllers: [],
   providers: [],
 })

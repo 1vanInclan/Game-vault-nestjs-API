@@ -1,68 +1,49 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateGameDto } from './dto/create-game.dto';
+import { PrismaService } from 'prisma/prisma.service';
 import { UpdateGameDto } from './dto/update-game.dto';
-import { Game } from './entities/game.entity';
-import { randomUUID } from 'crypto';
 
 @Injectable()
 export class GamesService {
 
 
-  private games: Game[] = [];
+  constructor(private prisma: PrismaService) {}
 
-  create(newGame: CreateGameDto) {
+  async create(newGame: CreateGameDto) {
 
-    const addGame: Game = {
-    id: randomUUID(),
-    title: newGame.title,
-    platform: newGame.platform,
-    year: newGame.year,
-    status: newGame.status || "PENDING",
-  };
-
-    this.games.push(addGame)
-
-    return addGame
+    return this.prisma.game.create({
+      data: newGame,
+    });
   }
 
-  findAll() {
-    return this.games
+  async findAll() {
+    return this.prisma.game.findMany()
   }
 
-  findOne(id: string) {
-    const game = this.games.find( game => game.id === id )
-
-    if(!game) {
-      throw new NotFoundException(`Juego con id ${id} no encontrado`)
-    }
-
-    return game
+  async findOne(id: string) {
+    const game = await this.prisma.game.findUnique({
+      where: { id },
+    });
+    if (!game) throw new NotFoundException(`Juego con ID ${id} no encontrado`);
+    return game;
   }
 
-  update(id: string, updateGameDto: UpdateGameDto) {
-    const gameIndex = this.games.findIndex(game => game.id === id)
+  async update(id: string, updateGameDto: UpdateGameDto) {
 
-    if(gameIndex === -1){
-      throw new NotFoundException(`Juego con id ${id} no encontrado`)
-    }
+    await this.findOne(id);
+    
+    return await this.prisma.game.update({
+    where: { id },
+    data: updateGameDto,
 
-    this.games[gameIndex] = {
-      ...this.games[gameIndex],
-      ...updateGameDto
-    }
-
-    return this.games[gameIndex];
+  });
 
   }
 
-  remove(id: string) {
-    const gameIndex = this.games.findIndex(game => game.id === id)
-    if(gameIndex === -1){
-      throw new NotFoundException(`Juego con id ${id} no encontrado`)
-    }
-
-    this.games.splice(gameIndex, 1)
-
-    return {Deleted: true}
+  async remove(id: string) {
+    await this.findOne(id);
+    return await this.prisma.game.delete({
+      where: { id },
+    });
   }
 }

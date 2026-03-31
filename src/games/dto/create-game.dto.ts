@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEnum, IsInt, IsOptional, IsString, Max, Min, MinLength } from "class-validator";
+import { IsEnum, IsInt, IsNotEmpty, IsOptional, IsString, Max, Min, MinLength } from "class-validator";
 
 export enum GameStatus {
   PENDING = 'PENDING',
@@ -10,8 +10,9 @@ export enum GameStatus {
 export class CreateGameDto {
 
   @ApiProperty({ description: 'El nombre del juego', example: 'Resident Evil 3' })
-  @IsString()
+  @IsString({ message: 'El título debe ser un texto' })
   @MinLength(1, { message: 'El título no puede estar vacío' })
+  @IsNotEmpty({ message: 'El título no puede estar vacío' })
   title: string;
 
   @ApiProperty({ description: 'Plataforma', example: 'Steam Deck' })
