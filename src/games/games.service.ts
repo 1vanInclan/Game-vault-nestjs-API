@@ -41,7 +41,7 @@ export class GamesService {
   }
 
   async remove(id: string) {
-    await this.findOne(id);
+    // await this.findOne(id);
     return await this.prisma.game.delete({
       where: { id },
     });
