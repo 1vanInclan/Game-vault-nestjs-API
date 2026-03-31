@@ -1,3 +1,4 @@
+import { ApiProperty } from "@nestjs/swagger";
 import { IsEnum, IsInt, IsOptional, IsString, Max, Min, MinLength } from "class-validator";
 
 export enum GameStatus {
@@ -8,10 +9,12 @@ export enum GameStatus {
 
 export class CreateGameDto {
 
+  @ApiProperty({ description: 'El nombre del juego', example: 'Resident Evil 3' })
   @IsString()
   @MinLength(1, { message: 'El título no puede estar vacío' })
   title: string;
 
+  @ApiProperty({ description: 'Plataforma', example: 'Steam Deck' })
   @IsString()
   platform: string;
 
@@ -20,6 +23,7 @@ export class CreateGameDto {
   @Max(new Date().getFullYear(), { message: 'Aún no vivimos en el futuro, c:' })
   year: number;
 
+  @ApiProperty({ description: 'Año de lanzamiento', example: 2020 })
   @IsEnum(GameStatus, {
     message: 'El estado debe ser: PENDING, PLAYING o PLATINUM',
   })

@@ -40,7 +40,19 @@ export class GamesService {
   }
 
   update(id: string, updateGameDto: UpdateGameDto) {
-    return `This action updates a #${id} game`;
+    const gameIndex = this.games.findIndex(game => game.id === id)
+
+    if(gameIndex === -1){
+      throw new NotFoundException(`Juego con id ${id} no encontrado`)
+    }
+
+    this.games[gameIndex] = {
+      ...this.games[gameIndex],
+      ...updateGameDto
+    }
+
+    return this.games[gameIndex];
+
   }
 
   remove(id: string) {
